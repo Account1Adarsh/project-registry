@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>All Projects</h2>
+  <ul class="list-group">
+    {% for project in object_list %}
+      <li class="list-group-item">
+        <a href="{{ project.link }}" target="_blank">{{ project.title }}</a>
+        <small class="text-muted">
+          {{ project.year }} | {{ project.batch }} | {{ project.branch }} | {{ project.get_project_type_display }}
+        </small>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No projects added yet.</li>
+    {% endfor %}
+  </ul>
+  {% if is_paginated %}
+    <nav class="mt-3">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Prev</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}
