@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+
 <form method="get" class="row g-2 align-items-end mb-4">
   <div class="col-md-4">
     <label for="search" class="form-label">Search</label>
@@ -10,7 +13,7 @@
       value="{{ filter_q }}"
     >
   </div>
-  <!-- Year dropdown -->
+
   <div class="col-md-2">
     <label for="year" class="form-label">Year</label>
     <select id="year" name="year" class="form-select">
@@ -20,7 +23,7 @@
       {% endfor %}
     </select>
   </div>
-  <!-- Branch dropdown -->
+
   <div class="col-md-3">
     <label for="branch" class="form-label">Branch</label>
     <select id="branch" name="branch" class="form-select">
@@ -30,7 +33,7 @@
       {% endfor %}
     </select>
   </div>
-  <!-- Type dropdown -->
+
   <div class="col-md-2">
     <label for="type" class="form-label">Type</label>
     <select id="type" name="type" class="form-select">
@@ -40,10 +43,29 @@
       {% endfor %}
     </select>
   </div>
-  <!-- Submit button -->
+
   <div class="col-md-1 text-end">
     <button type="submit" class="btn btn-primary w-100">
-      <i class="fas fa-filter"></i>
+      <i class="fas fa-filter me-1"></i>Filter
     </button>
   </div>
 </form>
+
+<div class="row g-4">
+  {% for project in projects %}
+    <!-- your card markup here -->
+  {% empty %}
+    <div class="text-center py-5">
+      <p class="mb-3">No projects found yet.</p>
+      <a href="{% url 'project_add' %}" class="btn btn-lg btn-outline-primary">Add your first project</a>
+    </div>
+  {% endfor %}
+</div>
+
+{% if is_paginated %}
+  <nav class="mt-5">
+    <!-- your pagination markup here -->
+  </nav>
+{% endif %}
+
+{% endblock %}
