@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from .models import Project
 from .forms import ProjectForm
+from django.db.models import Q
 
 class AdminRequiredMixin(UserPassesTestMixin):
     """
@@ -25,6 +26,7 @@ class ProjectListView(ListView):
     paginate_by = 10
     template_name = "projects/project_list.html"
     context_object_name = "projects"
+    
 
     def get_queryset(self):
         qs = super().get_queryset().order_by("-year", "title")
@@ -36,7 +38,7 @@ class ProjectListView(ListView):
         branch  = self.request.GET.get("branch", "")
         level   = self.request.GET.get("level", "")
         ptype   = self.request.GET.get("type", "")
-
+        filter_enroll = self.request.GET.get("enrollment")
         if q:
             qs = qs.filter(Q(title__icontains=q) | Q(link__icontains=q))
         if batch:
@@ -49,6 +51,8 @@ class ProjectListView(ListView):
             qs = qs.filter(level=level)
         if ptype:
             qs = qs.filter(project_type=ptype)
+        if filter_enroll:
+            qs = qs.filter(enrollment_number__icontains=filter_enroll)
 
         return qs
 
@@ -56,6 +60,7 @@ class ProjectListView(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx.update({
             "filter_q":      self.request.GET.get("q", ""),
+            "filter_enroll":      self.request.GET.get("enrollment", ""),
             "filter_batch":  self.request.GET.get("batch", ""),
             "filter_year":   self.request.GET.get("year", ""),
             "filter_branch": self.request.GET.get("branch", ""),

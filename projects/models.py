@@ -5,7 +5,8 @@ class Project(models.Model):
     link        = models.URLField(blank=True)
     year        = models.PositiveIntegerField()
     branch      = models.CharField(max_length=100)
-    batch = models.CharField(max_length=20, blank=True)  
+    batch = models.CharField(max_length=20, blank=True) 
+    enrollment_number = models.CharField(max_length=20, blank=True, null=True) 
     LEVEL_CHOICES = [
         ("minor", "Minor"),
         ("major", "Major"),

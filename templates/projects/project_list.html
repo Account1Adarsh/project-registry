@@ -10,83 +10,108 @@
   {% endif %}
 </div>
 
-<form method="get" class="row g-3 align-items-end mb-4">
-  <!-- Search -->
-  <div class="col-md-3">
-    <label for="search" class="form-label">Search</label>
-    <input
-      type="text"
-      id="search"
-      name="q"
-      class="form-control"
-      placeholder="Title or link…"
-      value="{{ filter_q }}"
-    >
+<form method="get">
+
+  {# ───────────── Row 1: Search ───────────── #}
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="search" class="form-label">Search</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="search"
+          name="q"
+          class="form-control"
+          placeholder="Title or link…"
+          value="{{ filter_q }}"
+        >
+        <button class="btn btn-primary" type="submit" name="action" value="search">
+          <i class="fas fa-search me-1"></i> Search
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Batch -->
-  <div class="col-md-2">
-    <label for="batch" class="form-label">Batch</label>
-    <select id="batch" name="batch" class="form-select">
-      <option value="">All</option>
-      {% for b in all_batches %}
-        <option value="{{ b }}" {% if filter_batch == b %}selected{% endif %}>{{ b }}</option>
-      {% endfor %}
-    </select>
-  </div>
+  {# ───────────── Row 2: Filters ───────────── #}
+  <div class="row g-3 align-items-end mb-4">
+    <!-- Batch -->
+    <div class="col-md-2">
+      <label for="batch" class="form-label">Batch</label>
+      <select id="batch" name="batch" class="form-select">
+        <option value="">All</option>
+        {% for b in all_batches %}
+          <option value="{{ b }}" {% if filter_batch == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <!-- Year -->
-  <div class="col-md-2">
-    <label for="year" class="form-label">Year</label>
-    <select id="year" name="year" class="form-select">
-      <option value="">All</option>
-      {% for y in all_years %}
-        <option value="{{ y }}" {% if filter_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <!-- Year -->
+    <div class="col-md-2">
+      <label for="year" class="form-label">Year</label>
+      <select id="year" name="year" class="form-select">
+        <option value="">All</option>
+        {% for y in all_years %}
+          <option value="{{ y }}" {% if filter_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <!-- Branch -->
-  <div class="col-md-2">
-    <label for="branch" class="form-label">Branch</label>
-    <select id="branch" name="branch" class="form-select">
-      <option value="">All</option>
-      {% for b in all_branches %}
-        <option value="{{ b }}" {% if b == filter_branch %}selected{% endif %}>{{ b }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <!-- Enrollment Number -->
+    <div class="col-md-3">
+      <label for="enrollment" class="form-label">Enrollment Number</label>
+      <input
+        type="text"
+        id="enrollment"
+        name="enrollment"
+        class="form-control"
+        placeholder="Enter enrollment number…"
+        value="{{ filter_enroll }}"
+      >
+    </div>
 
-  <!-- Level (Minor/Major) -->
-  <div class="col-md-2">
-    <label for="level" class="form-label">Level</label>
-    <select id="level" name="level" class="form-select">
-      <option value="">All</option>
-      {% for code,label in all_levels %}
-        <option value="{{ code }}" {% if filter_level == code %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <!-- Branch -->
+    <div class="col-md-2">
+      <label for="branch" class="form-label">Branch</label>
+      <select id="branch" name="branch" class="form-select">
+        <option value="">All</option>
+        {% for br in all_branches %}
+          <option value="{{ br }}" {% if br == filter_branch %}selected{% endif %}>{{ br }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <!-- Type -->
-  <div class="col-md-2">
-    <label for="type" class="form-label">Type</label>
-    <select id="type" name="type" class="form-select">
-      <option value="">All</option>
-      {% for code, label in all_types %}
-        <option value="{{ code }}" {% if code == filter_type %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <!-- Level -->
+    <div class="col-md-2">
+      <label for="level" class="form-label">Level</label>
+      <select id="level" name="level" class="form-select">
+        <option value="">All</option>
+        {% for code,label in all_levels %}
+          <option value="{{ code }}" {% if filter_level == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <!-- Filter button -->
-  <div class="col-md-1 text-end">
-    <button type="submit" class="btn btn-primary w-100">
-      <i class="fas fa-filter me-1"></i> Filter
-    </button>
+    <!-- Type -->
+    <div class="col-md-2">
+      <label for="type" class="form-label">Type</label>
+      <select id="type" name="type" class="form-select">
+        <option value="">All</option>
+        {% for code,label in all_types %}
+          <option value="{{ code }}" {% if filter_type == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Filter button -->
+    <div class="col-md-1 text-end">
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="fas fa-filter me-1"></i> Filter
+      </button>
+    </div>
   </div>
 </form>
 
+{# ───────────── Projects Grid ───────────── #}
 <div class="row g-4">
   {% for project in projects %}
     <div class="col-md-4">
@@ -94,7 +119,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ project.title }}</h5>
           <p class="card-text">
-            {{ project.batch }} · {{ project.year }} · {{ project.branch }} · {{ project.get_level_display }} · {{ project.get_project_type_display }}
+            {{ project.batch }} · {{ project.year }} · {{ project.branch }}
+            · {{ project.get_level_display }} · {{ project.get_project_type_display }}
           </p>
           {% if project.link %}
             <a href="{{ project.link }}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
@@ -103,6 +129,7 @@
           {% if user.is_staff %}
             <a href="{% url 'project_edit' project.pk %}" class="btn btn-sm btn-outline-warning ms-1">Edit</a>
           {% endif %}
+          <p class="card-text text-muted small">Enrollment: {{ project.enrollment_number }}</p>
         </div>
       </div>
     </div>
@@ -113,6 +140,7 @@
   {% endfor %}
 </div>
 
+{# ───────────── Pagination ───────────── #}
 {% if is_paginated %}
   <nav class="mt-5">
     <ul class="pagination justify-content-center">
@@ -124,16 +152,27 @@
                      {% if filter_branch %}branch={{ filter_branch }}&amp;{% endif %}
                      {% if filter_level %}level={{ filter_level }}&amp;{% endif %}
                      {% if filter_type %}type={{ filter_type }}&amp;{% endif %}
+                     {% if filter_enroll %}enrollment={{ filter_enroll }}&amp;{% endif %}
                      page={{ page_obj.previous_page_number }}"
              class="page-link">« Prev</a>
         </li>
       {% endif %}
+
       <li class="page-item disabled">
         <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
       </li>
+
       {% if page_obj.has_next %}
         <li class="page-item">
-          <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next »</a>
+          <a href="?{% if filter_q %}q={{ filter_q }}&amp;{% endif %}
+                     {% if filter_batch %}batch={{ filter_batch }}&amp;{% endif %}
+                     {% if filter_year %}year={{ filter_year }}&amp;{% endif %}
+                     {% if filter_branch %}branch={{ filter_branch }}&amp;{% endif %}
+                     {% if filter_level %}level={{ filter_level }}&amp;{% endif %}
+                     {% if filter_type %}type={{ filter_type }}&amp;{% endif %}
+                     {% if filter_enroll %}enrollment={{ filter_enroll }}&amp;{% endif %}
+                     page={{ page_obj.next_page_number }}"
+             class="page-link">Next »</a>
         </li>
       {% endif %}
     </ul>
