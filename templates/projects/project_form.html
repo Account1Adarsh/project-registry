@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block content %}
-  <h2>Add a New Project</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-success">Save</button>
-  </form>
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="mb-3">
+      {{ field.label_tag }}
+      {{ field|add_class:"form-control" }}
+      {% for error in field.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+  <button class="btn btn-success">Save Project</button>
+</form>
 {% endblock %}
