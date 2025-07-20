@@ -1,71 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Projects Registry</h1>
+  <a href="{% url 'project_add' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Add Project
+  </a>
+</div>
 
 <form method="get" class="row g-2 align-items-end mb-4">
-  <div class="col-md-4">
-    <label for="search" class="form-label">Search</label>
-    <input
-      type="text"
-      id="search"
-      name="q"
-      class="form-control"
-      placeholder="Title or link…"
-      value="{{ filter_q }}"
-    >
-  </div>
-
-  <div class="col-md-2">
-    <label for="year" class="form-label">Year</label>
-    <select id="year" name="year" class="form-select">
-      <option value="">All</option>
-      {% for y in all_years %}
-        <option value="{{ y }}" {% if filter_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="col-md-3">
-    <label for="branch" class="form-label">Branch</label>
-    <select id="branch" name="branch" class="form-select">
-      <option value="">All</option>
-      {% for b in all_branches %}
-        <option value="{{ b }}" {% if b == filter_branch %}selected{% endif %}>{{ b }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="col-md-2">
-    <label for="type" class="form-label">Type</label>
-    <select id="type" name="type" class="form-select">
-      <option value="">All</option>
-      {% for code, label in all_types %}
-        <option value="{{ code }}" {% if code == filter_type %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="col-md-1 text-end">
-    <button type="submit" class="btn btn-primary w-100">
-      <i class="fas fa-filter me-1"></i>Filter
-    </button>
-  </div>
+  <!-- your search & filter controls from above -->
 </form>
 
 <div class="row g-4">
   {% for project in projects %}
-    <!-- your card markup here -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ project.title }}</h5>
+          <p class="card-text">
+            {{ project.year }} &bull; {{ project.branch }} &bull; {{ project.get_project_type_display }}
+          </p>
+          {% if project.link %}
+            <a href="{{ project.link }}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+          {% endif %}
+          <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-secondary">Details</a>
+        </div>
+      </div>
+    </div>
   {% empty %}
     <div class="text-center py-5">
       <p class="mb-3">No projects found yet.</p>
-      <a href="{% url 'project_add' %}" class="btn btn-lg btn-outline-primary">Add your first project</a>
     </div>
   {% endfor %}
 </div>
 
 {% if is_paginated %}
   <nav class="mt-5">
-    <!-- your pagination markup here -->
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a href="?{% if filter_q %}q={{ filter_q }}&amp;{% endif %}
+                     {% if filter_year %}year={{ filter_year }}&amp;{% endif %}
+                     {% if filter_branch %}branch={{ filter_branch }}&amp;{% endif %}
+                     {% if filter_type %}type={{ filter_type }}&amp;{% endif %}
+                     page={{ page_obj.previous_page_number }}"
+             class="page-link">« Prev</a>
+        </li>
+      {% endif %}
+      <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next »</a>
+        </li>
+      {% endif %}
+    </ul>
   </nav>
 {% endif %}
-
 {% endblock %}

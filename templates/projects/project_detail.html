@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>{{ project.title }}</h1>
+  <p>
+    <strong>Year:</strong> {{ project.year }}<br>
+    <strong>Branch:</strong> {{ project.branch }}<br>
+    <strong>Type:</strong> {{ project.get_project_type_display }}<br>
+    {% if project.link %}
+      <strong>Link:</strong> <a href="{{ project.link }}" target="_blank">{{ project.link }}</a>
+    {% endif %}
+  </p>
+  <a href="{% url 'project_edit' project.pk %}" class="btn btn-primary">Edit</a>
+  <a href="{% url 'project_list' %}" class="btn btn-secondary">Back to list</a>
+{% endblock %}
