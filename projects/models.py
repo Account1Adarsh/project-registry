@@ -5,6 +5,13 @@ class Project(models.Model):
     link        = models.URLField(blank=True)
     year        = models.PositiveIntegerField()
     branch      = models.CharField(max_length=100)
+    batch = models.CharField(max_length=20, blank=True)  
+    LEVEL_CHOICES = [
+        ("minor", "Minor"),
+        ("major", "Major"),
+    ]
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, blank=True)
+
     PROJECT_TYPES = [
         ("web", "Web"),
         ("ml",  "Machine Learning"),
