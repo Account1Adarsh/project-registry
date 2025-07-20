@@ -59,15 +59,31 @@ TEMPLATES = [
 WSGI_APPLICATION = "project_registry.wsgi.application"
 ASGI_APPLICATION = "project_registry.asgi.application"
 
-import dj_database_url, os
 
-DATABASES = {
-  'default': dj_database_url.config(
-      default='sqlite:///db.sqlite3',
-      conn_max_age=600,
-      ssl_require=True
-  )
-}
+import os
+import dj_database_url
+
+# Get the full DATABASE_URL (e.g. postgres://… or sqlite:///…)
+db_url = os.environ.get("DATABASE_URL")
+
+if db_url and db_url.startswith("postgres"):
+    # On Render (or any Postgres host), require SSL
+    DATABASES = {
+        "default": dj_database_url.parse(
+            db_url,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    # Local development (or when DATABASE_URL is sqlite:///)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
 
 
 LOGIN_REDIRECT_URL = 'project_list'     # or you can use '/'  
